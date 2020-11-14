@@ -11,7 +11,35 @@ import java.util.Objects;
 
 import static javax.imageio.ImageIO.read;
 
-public class Map extends GameConstants {}
+public class Map {
+    public static final int WORLD_WIDTH = 2010;
+    public static final int WORLD_HEIGHT = 2010;
+    private BufferedImage background;
+
+    Map() {
+
+    }
+
+    public void initializeMap() {
+        try {
+            background = read(Objects.requireNonNull(TRE.class.getClassLoader().getResource("Background.bmp")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    public void drawImage(Graphics2D g) {
+        Graphics2D g2d = (Graphics2D) g;
+        for (int i = 0; i < WORLD_WIDTH / background.getWidth() + 1; i++) {
+            for (int j = 0; j < WORLD_HEIGHT / background.getHeight() + 1; j++) {
+                g2d.drawImage(background, i * background.getWidth(), j * background.getHeight(), null);
+            }
+
+        }
+    }
+}
    /* public static ArrayList<GameObjects> objects = new ArrayList<>();
     private BufferedImage background, wall, wall2, healthPowerUp,increasedDamage, speedUp;
     public static final int WORLD_WIDTH = 2010;

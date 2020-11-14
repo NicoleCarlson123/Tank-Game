@@ -101,8 +101,8 @@ public class TRE extends JPanel implements Runnable {
              */
             t1img = read(Objects.requireNonNull(TRE.class.getClassLoader().getResource("tank1.png")));
             t2img = read(Objects.requireNonNull(TRE.class.getClassLoader().getResource("Tank2.gif")));
-            //unbreakwall = read(Objects.requireNonNull(TRE.class.getClassLoader().getResource("Wall1.gif")));
-            //breakwall = read(Objects.requireNonNull(TRE.class.getClassLoader().getResource("Wall2.gif")));
+            unbreakwall = read(Objects.requireNonNull(TRE.class.getClassLoader().getResource("Wall1.gif")));
+            breakwall = read(Objects.requireNonNull(TRE.class.getClassLoader().getResource("Wall2.gif")));
             TRE.bulletImage = read(Objects.requireNonNull(TRE.class.getClassLoader().getResource("Shell.gif")));
 
 
@@ -140,7 +140,7 @@ public class TRE extends JPanel implements Runnable {
         t1 = new Tank(300, 300, 0, 0, 0, t1img);
         t2 = new Tank(1000, 800, 0, 0,(short) 0,t2img);
         background = new Map();
-        //background.initializeMap();
+        background.initializeMap();
 
         TankControl tc1 = new TankControl(t1, KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, KeyEvent.VK_ENTER);
         TankControl tc2 = new TankControl(t2, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, KeyEvent.VK_SPACE);
@@ -159,7 +159,7 @@ public class TRE extends JPanel implements Runnable {
         buffer.setColor(Color.BLACK);
         buffer.fillRect(0,0,GameConstants.WORLD_WIDTH,GameConstants.WORLD_HEIGHT);
 
-        //this.background.drawImage(buffer);
+        this.background.drawImage(buffer);
         this.walls.forEach(wall -> wall.drawImage(buffer));
         this.t1.drawImage(buffer);
         this.t2.drawImage(buffer);
