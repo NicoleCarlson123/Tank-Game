@@ -3,8 +3,8 @@
 
 | Student Information |                |
 |:-------------------:|----------------|
-|  Student Name       |   Name Here    |
-|  Student Email      |   Email Here   |
+|  Student Name       |   Nicole Carlson   |
+|  Student Email      |   ncarlson@mail.sfsu.edu   |
 
 ## src Folder Purpose 
 src folder is to be used to store source code only.
@@ -23,9 +23,9 @@ The jar folder is to be used to store the built jar of your term-project.
 
 # Required Information when Submitting Tank Game
 
-## Version of Java Used:
+## Version of Java Used: 12.0.2
 
-## IDE used: 
+## IDE used: IntelliJ IDEA
 
 ## Steps to Import project into IDE:
 
