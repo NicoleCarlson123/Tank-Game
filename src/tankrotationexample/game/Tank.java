@@ -1,7 +1,6 @@
 package tankrotationexample.game;
 
 
-
 import tankrotationexample.GameConstants;
 
 import java.awt.*;
@@ -10,10 +9,9 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 /**
- *
  * @author anthony-pc
  */
-public class Tank extends GameObjects{
+public class Tank extends GameObjects {
 
 
     private int x;
@@ -32,7 +30,6 @@ public class Tank extends GameObjects{
     private ArrayList<Bullet> ammo;
 
 
-
     private BufferedImage img;
     private boolean UpPressed;
     private boolean DownPressed;
@@ -47,18 +44,25 @@ public class Tank extends GameObjects{
         this.vx = vx;
         this.vy = vy;
         this.img = img;
+        this.lives = 3;
+        this.health = 100;
         this.angle = angle;
         this.ammo = new ArrayList<>();
         this.hitBox = new Rectangle(x, y, this.img.getWidth(), this.img.getHeight());
-       // Map.objects.add(this);
+        // Map.objects.add(this);
     }
-    public Rectangle getHitBox(){
+
+    public Rectangle getHitBox() {
         return hitBox.getBounds();
     }
 
-    void setX(int x){ this.x = x; }
+    void setX(int x) {
+        this.x = x;
+    }
 
-    void setY(int y) { this. y = y;}
+    void setY(int y) {
+        this.y = y;
+    }
 
     void toggleUpPressed() {
         this.UpPressed = true;
@@ -114,8 +118,8 @@ public class Tank extends GameObjects{
         if (this.RightPressed) {
             this.rotateRight();
         }
-        if(this.ShootPressed && TRE.tick % 20 ==0){
-            Bullet b = new Bullet(x,y,angle,TRE.bulletImage);
+        if (this.ShootPressed && TRE.tick % 20 == 0) {
+            Bullet b = new Bullet(x, y, angle, TRE.bulletImage);
             this.ammo.add(b);
         }
         this.ammo.forEach(bullet -> bullet.update());
@@ -135,7 +139,7 @@ public class Tank extends GameObjects{
         x -= vx;
         y -= vy;
         checkBorder();
-        this.hitBox.setLocation(x,y);
+        this.hitBox.setLocation(x, y);
     }
 
     private void moveForwards() {
@@ -144,10 +148,8 @@ public class Tank extends GameObjects{
         x += vx;
         y += vy;
         checkBorder();
-        this.hitBox.setLocation(x,y);
+        this.hitBox.setLocation(x, y);
     }
-
-
 
 
     private void checkBorder() {
@@ -171,16 +173,39 @@ public class Tank extends GameObjects{
     }
 
 
-        public void drawImage(Graphics g) {
+    public int getHealth() {
+        return health;
+    }
+
+    public void takeDamage() {
+        health -= damage;
+        if (health <= 0) {
+            health = 100;
+            lives -= 1;
+        }
+    }
+
+    public int getLives() {
+        return lives;
+    }
+
+    public void isWon() {
+        if (lives == 0) {
+            System.exit(1);
+        }
+    }
+
+    public void drawImage(Graphics g) {
         AffineTransform rotation = AffineTransform.getTranslateInstance(x, y);
         rotation.rotate(Math.toRadians(angle), this.img.getWidth() / 2.0, this.img.getHeight() / 2.0);
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(this.img, rotation, null);
         g2d.setColor(Color.CYAN);
-        g2d.drawRect(x,y,this.img.getWidth(),this.img.getHeight());
+        g2d.drawRect(x, y, this.img.getWidth(), this.img.getHeight());
         this.ammo.forEach(bullet -> bullet.drawImage(g));
 
     }
+
     public int getX() {
         return x;
     }

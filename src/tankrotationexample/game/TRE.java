@@ -12,6 +12,7 @@ import tankrotationexample.Launcher;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -72,11 +73,11 @@ public class TRE extends JPanel implements Runnable {
      */
     public void resetGame(){
         this.tick = 0;
-        this.t1.setX(300);
-        this.t1.setY(300);
+        this.t1.setX(700);
+        this.t1.setY(100);
 
-        this.t2.setX(400);
-        this.t2.setY(400);
+        this.t2.setX(500);
+        this.t2.setY(500);
     }
 
 
@@ -137,8 +138,8 @@ public class TRE extends JPanel implements Runnable {
             ex.printStackTrace();
         }
 
-        t1 = new Tank(300, 300, 0, 0, 0, t1img);
-        t2 = new Tank(1000, 800, 0, 0,(short) 0,t2img);
+        t1 = new Tank(1160, 868, 0, 0, 0, t1img);
+        t2 = new Tank(220, 289, 0, 0,(short) 0,t2img);
         background = new Map();
         background.initializeMap();
 
@@ -157,7 +158,9 @@ public class TRE extends JPanel implements Runnable {
         Graphics2D buffer = world.createGraphics();
 
         buffer.setColor(Color.BLACK);
+
         buffer.fillRect(0,0,GameConstants.WORLD_WIDTH,GameConstants.WORLD_HEIGHT);
+
 
         this.background.drawImage(buffer);
         this.walls.forEach(wall -> wall.drawImage(buffer));
@@ -171,12 +174,35 @@ public class TRE extends JPanel implements Runnable {
 
         BufferedImage leftHalf =  world.getSubimage(boundsX2, boundsY2, GameConstants.GAME_SCREEN_WIDTH/2,  GameConstants.GAME_SCREEN_HEIGHT);
         BufferedImage rightHalf =  world.getSubimage(boundsX, boundsY, GameConstants.GAME_SCREEN_WIDTH/2,  GameConstants.GAME_SCREEN_HEIGHT);
-        BufferedImage mm = world.getSubimage(0,0,GameConstants.WORLD_WIDTH,GameConstants.WORLD_HEIGHT);
 
+
+        BufferedImage mm = world.getSubimage(0,0,GameConstants.WORLD_WIDTH,GameConstants.WORLD_HEIGHT);
         g2.drawImage( leftHalf,0,0,null);
         g2.drawImage( rightHalf,GameConstants.GAME_SCREEN_WIDTH/2 + 4,0,null);
         g2.scale(.10, .10);
         g2.drawImage(mm, 200,200, null);
+
+        g2.setFont(new Font("TimesRoman", Font.PLAIN, 25));
+
+        g2.setColor(Color.WHITE);
+        g2.drawString("Lives : " + this.t1.getLives(), GameConstants.GAME_SCREEN_WIDTH * 65/80, GameConstants.GAME_SCREEN_HEIGHT * 35 / 40);
+        g2.setColor(Color.WHITE);
+        g2.drawString("Player 2 Health: " + this.t1.getHealth(), GameConstants.GAME_SCREEN_WIDTH * 50 / 80, GameConstants.GAME_SCREEN_HEIGHT * 35 / 40);
+        g2.setColor(Color.GREEN);
+        for (int i = 0; i < this.t1.getHealth() && i < 100; i++) {
+            g2.drawRect(GameConstants.GAME_SCREEN_WIDTH * 50 / 80 + i, GameConstants.GAME_SCREEN_HEIGHT * 36 / 40, 60, 30);
+        }
+        g2.setColor(Color.WHITE);
+        g2.drawString("Lives : " + this.t2.getLives(), GameConstants.GAME_SCREEN_WIDTH * 27/80, GameConstants.GAME_SCREEN_HEIGHT * 35 / 40);
+        g2.setColor(Color.WHITE);
+        g2.drawString("Player 1 Health: " + this.t2.getHealth(), GameConstants.GAME_SCREEN_WIDTH * 12 / 80, GameConstants.GAME_SCREEN_HEIGHT * 35 / 40);
+        g2.setColor(Color.GREEN);
+        for (int i = 0; i < this.t2.getHealth() && i < 100; i++) {
+            g2.drawRect(GameConstants.GAME_SCREEN_WIDTH * 13 / 80 + i, GameConstants.GAME_SCREEN_HEIGHT * 36 / 40, 60, 30);
+        }
+        this.t1.isWon();
+        this.t2.isWon();
+
     }
 
     public int checkBoundsX(Tank tank1){

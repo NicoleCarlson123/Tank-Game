@@ -28,19 +28,38 @@ The jar folder is to be used to store the built jar of your term-project.
 ## IDE used: IntelliJ IDEA
 
 ## Steps to Import project into IDE:
+    1) clone the repo
+
+    2) on your terminal run: git clone [key you copied]
+    
+    3)Open IntelliJ/ File/ New/ Project from existing Resources/ csc413-tankgame-NicoleCarlson123 folder
 
 ## Steps to Build your Project:
+    1) Go to 'Build' at top left of screen
+    2) Select 'Build Artifacts'
+    3) Select 'Action/Rebuild'
  
 ## Steps to run your Project:
+    From IntelliJ
+    1) Import project to IntelliJ
+    2)Right Click on Launcher class and click run 'Launcher.main()'
+    
+    From Jar
+    Using the Command Line:
+    1) cd into desktop
+    2) cd into csc413-tankgame-NicoleCarlson123
+    3) cd jar
+    4) run:
+        java -jar csc413-tankgame-NicoleCarlson123
 
 ## Controls to play your Game:
 
 |               | Player 1 | Player 2 |
 |---------------|----------|----------|
-|  Forward      |          |          |
-|  Backward     |          |          |
-|  Rotate left  |          |          |
-|  Rotate Right |          |          |
-|  Shoot        |          |          |
+|  Forward      | Up Arrow |    W      |
+|  Backward     |Down Arrow |   S       |
+|  Rotate left  |Left Arrow |   A       |
+|  Rotate Right |Right Arrow|   D       |
+|  Shoot        |  Enter    | SpaceBar   |
 
 <!-- you may add more controls if you need to. -->
