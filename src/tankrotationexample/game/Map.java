@@ -15,6 +15,7 @@ public class Map {
     public static final int WORLD_WIDTH = 2010;
     public static final int WORLD_HEIGHT = 2010;
     private BufferedImage background;
+    public static ArrayList<GameObjects> objects = new ArrayList<>();
 
     Map() {
 

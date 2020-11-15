@@ -36,7 +36,7 @@ public class TRE extends JPanel implements Runnable {
     public static BufferedImage bulletImage;
     private Launcher lf;
     public static long tick = 0;
-    ArrayList<Wall> walls;
+    ArrayList<GameObjects> walls;
     private Map background;
 
 
@@ -58,10 +58,10 @@ public class TRE extends JPanel implements Runnable {
                  * simulate an end game event
                  * we will do this with by ending the game when drawn 2000 frames have been drawn
                  */
-                if(this.tick > 2000){
+               /* if(this.tick > 2000){
                     this.lf.setFrame("end");
                     return;
-                }
+                }*/
             }
        } catch (InterruptedException ignored) {
            System.out.println(ignored);
@@ -123,11 +123,13 @@ public class TRE extends JPanel implements Runnable {
                  for(int curCol = 0; curCol < numCols; curCol++){
                     switch(mapInfo[curCol]){
                         case "2":
-                            this.walls.add(new BreakWall(curCol *30, curRow*30, breakwall));
+                            this.walls.add(new BreakWall(breakwall, curCol *30, curRow*30 ));
+                            Map.objects.add(new BreakWall( breakwall, curCol *30, curRow*30));
                             break;
                         case "3":
                         case "9":
-                            this.walls.add(new UnBreakWall(curCol *30, curRow*30, unbreakwall));
+                            this.walls.add(new UnBreakWall(unbreakwall, curCol *30, curRow*30));
+                            Map.objects.add(new UnBreakWall(unbreakwall, curCol *30, curRow*30));
 
                     }
                  }
@@ -202,9 +204,7 @@ public class TRE extends JPanel implements Runnable {
         this.t1.isWon();
         this.t2.isWon();
 
-        /*BufferedImage mm = world.getSubimage(0,0,GameConstants.WORLD_WIDTH,GameConstants.WORLD_HEIGHT);
-        g2.scale(.10, .10);
-        g2.drawImage(mm, 200,200, null);*/
+
 
 
     }

@@ -6,8 +6,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-public class GameObjects {}
-   /* protected int x;
+public abstract class GameObjects {
+    protected int x;
     protected int y;
     protected int vx;
     protected int vy;
@@ -22,9 +22,12 @@ public class GameObjects {}
         this.bounds = new Rectangle(this.x, this.y, img.getWidth(),img.getHeight());
 
     }
+    public void drawImage(Graphics g){
+        Graphics2D g2 = (Graphics2D) g;
+        g2.drawImage(img, x, y, null);
 
-    public GameObjects() {
     }
+
 
     public Rectangle getBounds(){return this.bounds;}
     public void updateBounds(){this.bounds = new Rectangle(this.x, this.y, img.getWidth(), img.getHeight());}
@@ -37,6 +40,6 @@ public class GameObjects {}
     }
 
 
-    }*/
+    }
 
 

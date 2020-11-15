@@ -26,6 +26,7 @@ public class Tank extends GameObjects {
     private int damage = 5;
 
 
+
     private final float ROTATIONSPEED = 3.0f;
     private ArrayList<Bullet> ammo;
 
@@ -39,8 +40,7 @@ public class Tank extends GameObjects {
 
 
     Tank(int x, int y, int vx, int vy, int angle, BufferedImage img) {
-        this.x = x;
-        this.y = y;
+        super(x, y, img);
         this.vx = vx;
         this.vy = vy;
         this.img = img;
@@ -49,11 +49,11 @@ public class Tank extends GameObjects {
         this.angle = angle;
         this.ammo = new ArrayList<>();
         this.hitBox = new Rectangle(x, y, this.img.getWidth(), this.img.getHeight());
-        // Map.objects.add(this);
+       // Map.objects.add(this);
     }
 
     public Rectangle getHitBox() {
-        return hitBox.getBounds();
+        return hitBox;
     }
 
     void setX(int x) {
@@ -123,6 +123,8 @@ public class Tank extends GameObjects {
             this.ammo.add(b);
         }
         this.ammo.forEach(bullet -> bullet.update());
+
+        checkCollision(this);
     }
 
     private void rotateLeft() {
@@ -214,4 +216,37 @@ public class Tank extends GameObjects {
         return y;
     }
 
+    public void checkCollision(Tank tank){
+        GameObjects object;
+        Rectangle tankBound = tank.getHitBox();
+        for (int i = 0; i < Map.objects.size(); i++){
+            object = Map.objects.get(i);
+            if(tankBound.intersects(object.getBounds())){
+                handle(object);
+            }
+        }
+    }
+
+    public void handle(GameObjects game){
+        if(game instanceof BreakWall){
+            if (this.UpPressed){
+                this.x -= vx;
+                this.y -= vy;
+            }
+            if(this.DownPressed){
+                this.x += vx;
+                this.y += vy;
+            }
+        }
+        if (game instanceof UnBreakWall) {
+            if (this.UpPressed) {
+                this.x -= vx;
+                this.y -= vy;
+            }
+            if (this.DownPressed) {
+                this.x += vx;
+                this.y += vy;
+            }
+        }
+    }
 }
