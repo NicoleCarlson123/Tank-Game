@@ -174,13 +174,12 @@ public class TRE extends JPanel implements Runnable {
 
         BufferedImage leftHalf =  world.getSubimage(boundsX2, boundsY2, GameConstants.GAME_SCREEN_WIDTH/2,  GameConstants.GAME_SCREEN_HEIGHT);
         BufferedImage rightHalf =  world.getSubimage(boundsX, boundsY, GameConstants.GAME_SCREEN_WIDTH/2,  GameConstants.GAME_SCREEN_HEIGHT);
-
-
-        BufferedImage mm = world.getSubimage(0,0,GameConstants.WORLD_WIDTH,GameConstants.WORLD_HEIGHT);
         g2.drawImage( leftHalf,0,0,null);
         g2.drawImage( rightHalf,GameConstants.GAME_SCREEN_WIDTH/2 + 4,0,null);
-        g2.scale(.10, .10);
-        g2.drawImage(mm, 200,200, null);
+
+        AffineTransform minimap = AffineTransform.getTranslateInstance(GameConstants.GAME_SCREEN_WIDTH/2.5, 0);
+        minimap.scale(0.17,0.17);
+        g2.drawImage(world, minimap, null);
 
         g2.setFont(new Font("TimesRoman", Font.PLAIN, 25));
 
@@ -202,6 +201,11 @@ public class TRE extends JPanel implements Runnable {
         }
         this.t1.isWon();
         this.t2.isWon();
+
+        /*BufferedImage mm = world.getSubimage(0,0,GameConstants.WORLD_WIDTH,GameConstants.WORLD_HEIGHT);
+        g2.scale(.10, .10);
+        g2.drawImage(mm, 200,200, null);*/
+
 
     }
 
