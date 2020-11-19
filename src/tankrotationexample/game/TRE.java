@@ -58,9 +58,9 @@ public class TRE extends JPanel implements Runnable {
                  * simulate an end game event
                  * we will do this with by ending the game when drawn 2000 frames have been drawn
                  */
-                //if(this.t1.getLives() || this.t2.getLives()){
-                //    this.lf.setFrame("end");
-                //    return;
+                //if(lives == 0){
+               //   this.lf.setFrame("end");
+               //  return;
                // }
             }
        } catch (InterruptedException ignored) {
@@ -122,12 +122,10 @@ public class TRE extends JPanel implements Runnable {
                  for(int curCol = 0; curCol < numCols; curCol++){
                     switch(mapInfo[curCol]){
                         case "2":
-                            this.walls.add(new BreakWall(breakwall, curCol *30, curRow*30 ));
                             Map.objects.add(new BreakWall( breakwall, curCol *30, curRow*30));
                             break;
                         case "3":
                         case "9":
-                            this.walls.add(new UnBreakWall(unbreakwall, curCol *30, curRow*30));
                             Map.objects.add(new UnBreakWall(unbreakwall, curCol *30, curRow*30));
 
                     }

@@ -39,11 +39,15 @@ public class Map {
 
     public void drawImage(Graphics2D g) {
         Graphics2D g2d = (Graphics2D) g;
+
         for (int i = 0; i < WORLD_WIDTH / background.getWidth() + 1; i++) {
             for (int j = 0; j < WORLD_HEIGHT / background.getHeight() + 1; j++) {
                 g2d.drawImage(background, i * background.getWidth(), j * background.getHeight(), null);
             }
 
+        }
+        for(int i = 0; i < objects.size(); i++){
+            objects.get(i).drawImage(g2d);
         }
     }
 }
