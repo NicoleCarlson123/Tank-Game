@@ -6,51 +6,88 @@ import tankrotationexample.GameConstants;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
-public class Bullet {
-    int x,y, vx, vy, angle;
-    int R = 7;
-    BufferedImage bulletImage;
-    Rectangle hitBox;
+import static javax.imageio.ImageIO.read;
 
-    public Bullet(int x, int y, int angle, BufferedImage bulletImage){
-        this.x = x;
-        this.y = y;
+public class Bullet extends GameObjects{
+    private final int R= 4;
+    protected int bx;
+    protected int by;
+    protected int angle;
+    boolean alive;
+    private static BufferedImage bullet;
+    private Rectangle bound = new Rectangle(this.x, this.y, this.bullet.getWidth(), this.bullet.getHeight());
+
+    Tank tank;
+
+    static {
+        try{
+            bullet = read(new File("resources/Shell.gif"));
+        }catch (IOException ex){
+
+        }
+    }
+
+    Bullet(Tank tank, int x, int y, int angle){
+        super(x,y, bullet);
         this.angle = angle;
-        this.bulletImage = bulletImage;
-        this.hitBox = new Rectangle(x, y, this.bulletImage.getWidth(), this.bulletImage.getHeight());
-    }
-    public  void moveForwards(){
-        vx = (int) Math.round(R * Math.cos(Math.toRadians(angle)));
-        vy = (int) Math.round(R * Math.sin(Math.toRadians(angle)));
-        x += vx;
-        y += vy;
-        checkBorder();
+        alive = true;
+
+        this.tank = tank;
 
     }
-    public void checkBorder(){
-        if (x < 30) {
-            x = 30;
-        }
-        if (x >= GameConstants.WORLD_WIDTH - 88) {
-            x = GameConstants.WORLD_HEIGHT - 88;
-        }
-        if (y < 40) {
-            y = 40;
-        }
-        if (y >= GameConstants.WORLD_HEIGHT - 80) {
-            y = GameConstants.WORLD_HEIGHT - 80;
-        }
+
+    public boolean isAlive() {
+        return alive;
     }
-    public void update(){
-        moveForwards();
+
+    public void update() {
+        bx = (int) Math.round(R * Math.cos(Math.toRadians(angle)));
+        by = (int) Math.round(R * Math.sin(Math.toRadians(angle)));
+        x += bx;
+        y += by;
+        checkCollision(this);
+        updateBounds();
 
     }
-    public void drawImage(Graphics g){
+
+    public void drawImage(Graphics g) {
         AffineTransform rotation = AffineTransform.getTranslateInstance(x, y);
-        rotation.rotate(Math.toRadians(angle), this.bulletImage.getWidth() / 2.0, this.bulletImage.getHeight() / 2.0);
+        rotation.rotate(Math.toRadians(angle), this.bullet.getWidth() / 2.0, this.bullet.getHeight() / 2.0);
         Graphics2D g2d = (Graphics2D) g;
-        g2d.drawImage(this.bulletImage, rotation, null);
+        g2d.drawImage(this.bullet, rotation, null);
+
+    }
+
+    public void checkCollision(Bullet bullet){
+        GameObjects obj;
+        Rectangle tbound = bullet.getBounds();
+        for (int i =0; i< Map.objects.size();i++){
+            obj = Map.objects.get(i);
+            if (tbound.intersects(obj.getBounds()) && obj != tank){
+                if(obj instanceof BreakWall) {
+                    Map.objects.remove(obj);
+                }
+                if(obj instanceof Tank){
+                    ((Tank) obj).takeDamage();
+                }
+                alive = false;
+            }
+        }
+    }
+
+    public Rectangle getBounds(){
+        return this.bound;
+    }
+
+    public void updateBounds(){
+        this.bound = new Rectangle(this.x, this.y, bullet.getWidth(), bullet.getHeight());
     }
 }
+
+
+
+
 

@@ -7,53 +7,42 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * @author anthony-pc
  */
 public class Tank extends GameObjects {
-
-
-    private int x;
-    private int y;
     private int vx;
     private int vy;
     private int angle;
-    private Rectangle hitBox;
     private int health;
     private int lives;
     private int R = 2;
     private int damage = 5;
-
-
-
-    private final float ROTATIONSPEED = 3.0f;
-    private ArrayList<Bullet> ammo;
-
-
-    private BufferedImage img;
+    private final int ROTATIONSPEED = 4;
+    private float cooldown = 100;
+    private float cooldownTimer = 0;
     private boolean UpPressed;
     private boolean DownPressed;
     private boolean RightPressed;
     private boolean LeftPressed;
-    private boolean ShootPressed;
-
+    private boolean ShotPressed;
+    private Rectangle bound = new Rectangle(this.x, this.y, img.getWidth(), img.getHeight());
+    private Bullet bullet;
+    public ArrayList<Bullet> bulletsList = new ArrayList<>();
 
     Tank(int x, int y, int vx, int vy, int angle, BufferedImage img) {
+
         super(x, y, img);
         this.vx = vx;
         this.vy = vy;
         this.img = img;
-        this.lives = 3;
-        this.health = 100;
         this.angle = angle;
-        this.ammo = new ArrayList<>();
-        this.hitBox = new Rectangle(x, y, this.img.getWidth(), this.img.getHeight());
-       // Map.objects.add(this);
-    }
+        this.health = 100;
+        this.lives = 3;
+        Map.objects.add(this);
 
-    public Rectangle getHitBox() {
-        return hitBox;
     }
 
     void setX(int x) {
@@ -81,7 +70,7 @@ public class Tank extends GameObjects {
     }
 
     void toggleShootPressed() {
-        this.ShootPressed = true;
+        this.ShotPressed = true;
     }
 
     void unToggleUpPressed() {
@@ -101,38 +90,57 @@ public class Tank extends GameObjects {
     }
 
     void unToggleShootPressed() {
-        this.ShootPressed = false;
+        this.ShotPressed = false;
     }
 
-    void update() {
+
+    public void update() {
         if (this.UpPressed) {
             this.moveForwards();
+            updateBounds();
         }
         if (this.DownPressed) {
             this.moveBackwards();
+            updateBounds();
         }
 
         if (this.LeftPressed) {
             this.rotateLeft();
+            updateBounds();
+
         }
         if (this.RightPressed) {
             this.rotateRight();
+            updateBounds();
         }
-        if (this.ShootPressed && TRE.tick % 20 == 0) {
-            Bullet b = new Bullet(x, y, angle, TRE.bulletImage);
-            this.ammo.add(b);
+
+        if (cooldownTimer < cooldown) {
+            cooldownTimer += 1;
         }
-        this.ammo.forEach(bullet -> bullet.update());
+
+        if (this.ShotPressed) {
+            this.shoot(bullet);
+            updateBounds();
+        }
+
+        for (int x = 0; x < bulletsList.size(); x++) {
+            if (bulletsList.get(x).isAlive()) {
+                bulletsList.get(x).update();
+            }
+        }
 
         checkCollision(this);
+
     }
 
     private void rotateLeft() {
         this.angle -= this.ROTATIONSPEED;
+        updateBounds();
     }
 
     private void rotateRight() {
         this.angle += this.ROTATIONSPEED;
+        updateBounds();
     }
 
     private void moveBackwards() {
@@ -141,7 +149,7 @@ public class Tank extends GameObjects {
         x -= vx;
         y -= vy;
         checkBorder();
-        this.hitBox.setLocation(x, y);
+        updateBounds();
     }
 
     private void moveForwards() {
@@ -150,9 +158,15 @@ public class Tank extends GameObjects {
         x += vx;
         y += vy;
         checkBorder();
-        this.hitBox.setLocation(x, y);
+        updateBounds();
     }
 
+    private void shoot(Bullet bullet) {
+        if (cooldownTimer >= cooldown) {
+            bulletsList.add(new Bullet(this, x, y, angle));
+            cooldownTimer = 0;
+        }
+    }
 
     private void checkBorder() {
         if (x < 30) {
@@ -164,14 +178,14 @@ public class Tank extends GameObjects {
         if (y < 40) {
             y = 40;
         }
-        if (y >= GameConstants.WORLD_HEIGHT - 80) {
+        if (y >= GameConstants.WORLD_WIDTH - 80) {
             y = GameConstants.WORLD_HEIGHT - 80;
         }
     }
 
     @Override
     public String toString() {
-        return "x=" + x + ", y=" + y + ", angle=" + angle;
+        return "x=" + x + ", y=" + y + "angle=" + angle + Arrays.toString(bulletsList.toArray());
     }
 
 
@@ -198,47 +212,38 @@ public class Tank extends GameObjects {
     }
 
     public void drawImage(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+        for (int x = 0; x < bulletsList.size(); x++) {
+            if (bulletsList.get(x).isAlive()) {
+                bulletsList.get(x).drawImage(g2d);
+            }
+        }
         AffineTransform rotation = AffineTransform.getTranslateInstance(x, y);
         rotation.rotate(Math.toRadians(angle), this.img.getWidth() / 2.0, this.img.getHeight() / 2.0);
-        Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(this.img, rotation, null);
-        g2d.setColor(Color.CYAN);
-        g2d.drawRect(x, y, this.img.getWidth(), this.img.getHeight());
-        this.ammo.forEach(bullet -> bullet.drawImage(g));
-
     }
 
-    public int getX() {
-        return x;
+    public Rectangle getBounds() {
+        return this.bound;
     }
 
-    public int getY() {
-        return y;
+    public void updateBounds() {
+        this.bound = new Rectangle(this.x, this.y, img.getWidth(), img.getHeight());
     }
 
-    public void checkCollision(Tank tank){
-        GameObjects object;
-        Rectangle tankBound = tank.getHitBox();
-        for (int i = 0; i < Map.objects.size(); i++){
-            object = Map.objects.get(i);
-            if(tankBound.intersects(object.getBounds())){
-                handle(object);
+    public void checkCollision(Tank tank) {
+        GameObjects obj;
+        Rectangle tbound = tank.getBounds();
+        for (int i = 0; i < Map.objects.size(); i++) {
+            obj = Map.objects.get(i);
+            if (tbound.intersects(obj.getBounds())) {
+                handle(obj);
             }
         }
     }
 
-    public void handle(GameObjects game){
-        if(game instanceof BreakWall){
-            if (this.UpPressed){
-                this.x -= vx;
-                this.y -= vy;
-            }
-            if(this.DownPressed){
-                this.x += vx;
-                this.y += vy;
-            }
-        }
-        if (game instanceof UnBreakWall) {
+    public void handle(GameObjects obj) {
+        if (obj instanceof UnBreakWall) {
             if (this.UpPressed) {
                 this.x -= vx;
                 this.y -= vy;
@@ -248,5 +253,32 @@ public class Tank extends GameObjects {
                 this.y += vy;
             }
         }
+        if (obj instanceof BreakWall) {
+            if (this.UpPressed) {
+                this.x -= vx;
+                this.y -= vy;
+            }
+            if (this.DownPressed) {
+                this.x += vx;
+                this.y += vy;
+            }
+        }
+        if (obj instanceof HealthPowerUp){
+            if(health < 100) {
+                this.health = 100;
+                Map.objects.remove(obj);
+            }
+        }
+        if( obj instanceof SpeedUpPowerUp){
+            R = 4;
+            Map.objects.remove(obj);
+        }
+        if (obj instanceof PlusOneLifePowerUp){
+            this.lives += 1;
+            Map.objects.remove(obj);
+        }
+
     }
 }
+
+

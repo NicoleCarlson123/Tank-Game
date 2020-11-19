@@ -33,7 +33,7 @@ public class TRE extends JPanel implements Runnable {
     private BufferedImage world;
     private Tank t1;
     private Tank t2;
-    public static BufferedImage bulletImage;
+    //public static BufferedImage bulletImage;
     private Launcher lf;
     public static long tick = 0;
     ArrayList<GameObjects> walls;
@@ -58,10 +58,10 @@ public class TRE extends JPanel implements Runnable {
                  * simulate an end game event
                  * we will do this with by ending the game when drawn 2000 frames have been drawn
                  */
-               /* if(this.tick > 2000){
-                    this.lf.setFrame("end");
-                    return;
-                }*/
+                //if(this.t1.getLives() || this.t2.getLives()){
+                //    this.lf.setFrame("end");
+                //    return;
+               // }
             }
        } catch (InterruptedException ignored) {
            System.out.println(ignored);
@@ -76,8 +76,8 @@ public class TRE extends JPanel implements Runnable {
         this.t1.setX(700);
         this.t1.setY(100);
 
-        this.t2.setX(500);
-        this.t2.setY(500);
+        this.t2.setX(300);
+        this.t2.setY(300);
     }
 
 
@@ -104,7 +104,6 @@ public class TRE extends JPanel implements Runnable {
             t2img = read(Objects.requireNonNull(TRE.class.getClassLoader().getResource("Tank2.gif")));
             unbreakwall = read(Objects.requireNonNull(TRE.class.getClassLoader().getResource("Wall1.gif")));
             breakwall = read(Objects.requireNonNull(TRE.class.getClassLoader().getResource("Wall2.gif")));
-            TRE.bulletImage = read(Objects.requireNonNull(TRE.class.getClassLoader().getResource("Shell.gif")));
 
 
             InputStreamReader isr = new InputStreamReader(TRE.class.getClassLoader().getResourceAsStream("maps/map1"));
@@ -140,8 +139,8 @@ public class TRE extends JPanel implements Runnable {
             ex.printStackTrace();
         }
 
-        t1 = new Tank(1160, 868, 0, 0, 0, t1img);
-        t2 = new Tank(220, 289, 0, 0,(short) 0,t2img);
+        t1 = new Tank(700, 100, 0, 0, 0, t1img);
+        t2 = new Tank(300, 300, 0, 0,(short) 0,t2img);
         background = new Map();
         background.initializeMap();
 
